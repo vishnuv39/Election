@@ -1,5 +1,4 @@
-// Firebase configuration for the AP Election TV two-device system.
-// This is the Web App configuration for Firebase project: elections-55916.
+// Firebase configuration for AP Election TV
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyCN74tHIaIu_3ZWIsOppvmaIW9K81TnRLw",
   authDomain: "elections-55916.firebaseapp.com",
@@ -11,17 +10,9 @@ const FIREBASE_CONFIG = {
   measurementId: "G-P6XVTXW4K4"
 };
 
-const ELECTION_PATH = 'ap-election-live';
+const ELECTION_PATH = "ap-election-live";
 
-function firebaseReady(){
-  return !!(
-    FIREBASE_CONFIG.apiKey &&
-    FIREBASE_CONFIG.databaseURL &&
-    FIREBASE_CONFIG.projectId
-  );
-}
-
-if(firebaseReady()){
+if (typeof firebase !== "undefined") {
   firebase.initializeApp(FIREBASE_CONFIG);
   window.ELECTION_DB = firebase.database().ref(ELECTION_PATH);
 }
