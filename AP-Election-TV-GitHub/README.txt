@@ -1,22 +1,16 @@
-AP ELECTION TV - TWO DEVICE GITHUB PAGES SETUP
+AP ELECTION TV - FIXED TWO DEVICE PACKAGE
 
 Files:
-- control-room.html  -> open this on your phone
-- tv.html             -> open this on the laptop/TV
-- firebase-config.js  -> Firebase configuration for project elections-55916
+- control-room.html  -> open on phone
+- tv.html            -> open on laptop/TV
+- firebase-config.js -> Firebase connection
 
-GitHub Pages:
-1. Create/open a GitHub repository.
-2. Upload all four files to the repository root.
-3. Enable GitHub Pages from Settings -> Pages -> Deploy from a branch -> main -> / (root).
-4. Wait for deployment.
-5. Open:
-   https://YOUR-USERNAME.github.io/YOUR-REPO/control-room.html
-   https://YOUR-USERNAME.github.io/YOUR-REPO/tv.html
+Firebase project: elections-55916
+Realtime Database path: ap-election-live
 
-Firebase:
-- Realtime Database path used by both pages: ap-election-live
-- Both pages use Firebase Realtime Database for real-time synchronization.
-- Current database rules are public read/write for initial testing. Secure them before public/production use.
+Important:
+The previous TV file was missing the actual TV HTML markup. This package restores the original TV/control layout and keeps the Firebase real-time synchronization.
 
-The TV page is read-only for broadcast display. The control room publishes the election state.
+GitHub Pages URLs after upload:
+https://vishnuv39.github.io/Election/AP-Election-TV-GitHub/control-room.html
+https://vishnuv39.github.io/Election/AP-Election-TV-GitHub/tv.html
