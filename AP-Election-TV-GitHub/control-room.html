@@ -1613,7 +1613,10 @@ function applyRemoteSnapshot(data){
   applyPermanentVipDefaults();
   simVersion = Number(data.simVersion||0);
   currentRound = Number(data.currentRound||0);
-  maxRounds = Number(data.maxRounds||Math.max(1,...Object.values(STATE).map(s=>s.result?.totalRounds||1)));
+  const stateMaxRounds = Math.max(1,...Object.values(STATE).map(s=>Number(s?.result?.totalRounds||1)));
+    maxRounds = Math.max(Number(data.maxRounds||0), stateMaxRounds);
+    const allSeatsFinal = Object.values(STATE||{}).length>0 && Object.values(STATE||{}).every(s=>Number(s?.revealed||0)>=Number(s?.result?.totalRounds||0));
+    if(allSeatsFinal) currentRound = maxRounds;
   eventLog = Array.isArray(data.eventLog)?data.eventLog:[];
 }
 function ensureFirebase(){
