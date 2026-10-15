@@ -629,7 +629,7 @@ function initState(){
     STATE[rec.id] = { id:rec.id, name:rec.name, meta, rowVersion:0, result: genResult(meta, seedFor(rec.id, simVersion)), viewingRound:0, revealed:0, vipC1: prev.vipC1 || isPermanentVipCandidate(rec.c1), vipC2: prev.vipC2 || isPermanentVipCandidate(rec.c2), photoC1: prev.photoC1 || defaultPhotoC1, photoC2: prev.photoC2 || defaultPhotoC2 };
   });
   currentRound = 0;
-  maxRounds = Math.max(...Object.values(STATE).map(s=>s.result.totalRounds));
+  maxRounds = Math.max(21,...Object.values(STATE).map(s=>s.result.totalRounds));
   eventLog = [];
 }
 initState();
@@ -646,7 +646,7 @@ function regenerateRow(id){
   s.result = genResult(s.meta, seedFor(id, simVersion*100000 + s.rowVersion));
   s.viewingRound = 0;
   s.revealed = 0;
-  maxRounds = Math.max(...Object.values(STATE).map(x=>x.result.totalRounds));
+  maxRounds = Math.max(21,...Object.values(STATE).map(x=>x.result.totalRounds));
 }
 
 function classify(party){ if(ALLIANCE_PARTIES.includes(party)) return 'ALLIANCE'; if(party==='YSRCP') return 'YSRCP'; return 'OTHER'; }

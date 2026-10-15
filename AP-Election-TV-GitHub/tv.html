@@ -1777,7 +1777,7 @@ function buildNewsFeed(t){
   // Once all seats are declared, the broadcast round is definitively the
   // final global round. This prevents a stale round value from leaving the
   // red-screen news at Round 21 while the results are already final.
-  const broadcastRound = allDeclared ? maxRounds : currentRound;
+  const broadcastRound = allDeclared ? 21 : currentRound;
   const lines = [];
   const push = (text)=>lines.push({cls:null, text});
 
@@ -2407,7 +2407,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(typeof simVersion!=='undefined') simVersion=Number(data.simVersion||0);
     if(typeof maxRounds!=='undefined') {
       const stateMaxRounds=Math.max(1,...Object.values(STATE||{}).map(s=>Number(s?.result?.totalRounds||1)));
-      maxRounds=Math.max(Number(data.maxRounds||0),stateMaxRounds);
+      maxRounds=Math.max(21,Number(data.maxRounds||0),stateMaxRounds);
     }
     if(typeof currentRound!=='undefined') currentRound=Number(data.currentRound||0);
     // Safety net for the final snapshot: if every constituency is already
