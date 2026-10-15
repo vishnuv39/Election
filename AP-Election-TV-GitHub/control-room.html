@@ -480,7 +480,7 @@ function seedFor(id,version){ return (id*100003 + version*7919 + 13) >>> 0; }
 function genResult(meta, seed){
   const rng = mulberry32(seed);
   const totalVotes = randInt(rng,150000,200000);
-  const totalRounds = randInt(rng,18,22);
+  const totalRounds = randInt(rng,18,21);
   const [mn,mx] = CAT_RANGES[meta.cat];
   let margin = randInt(rng,mn,mx);
   margin = Math.min(margin, Math.floor(totalVotes*0.85));
