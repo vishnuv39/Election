@@ -470,6 +470,30 @@ table.log td .cum{ font-family:var(--font-mono); font-size:9.5px; color:var(--mu
 .tv-final-left-photo-head{flex:0 0 auto;background:var(--tvblack);color:var(--yellow);font-family:'Anek Telugu',sans-serif;font-weight:800;font-size:15px;text-align:center;padding:7px 4px;border-bottom:2px solid var(--yellow);}
 .tv-final-left-photo-stage{position:relative;flex:1 1 auto;min-height:0;background:#fff;overflow:hidden;}
 .tv-final-left-photo-stage .final-left-photo-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;display:block;opacity:0;transition:opacity 1.1s ease-in-out;will-change:opacity;}
+
+/* Overall exit-poll survey panel */
+.overall-exit-panel{margin:14px 0 18px;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+.overall-exit-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.overall-exit-title{font-weight:800;font-size:16px;color:var(--text)}
+.overall-exit-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.survey-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.survey-card{border:1px solid var(--border);border-radius:9px;padding:11px;background:var(--bg-2);min-width:0}
+.survey-name{font-weight:800;font-size:12px;letter-spacing:.5px;margin-bottom:9px;color:var(--text)}
+.survey-party-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.survey-party{min-width:0}
+.survey-party label{display:block;font-size:10px;font-weight:800;color:var(--muted);margin-bottom:4px}
+.survey-range{display:flex;gap:3px;align-items:center}
+.survey-range input{width:50%;min-width:0;padding:6px 3px;border:1px solid var(--border);border-radius:5px;background:var(--panel);color:var(--text);font:600 11px inherit;text-align:center}
+.survey-range span{font-size:9px;color:var(--muted-2)}
+.overall-result{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.overall-result-title{font-size:12px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.overall-result-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.overall-result-item{padding:9px 6px;border-radius:7px;background:var(--bg-2);text-align:center}
+.overall-result-item b{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+.overall-result-item strong{font:700 15px var(--mono,monospace);color:var(--text)}
+.overall-result-note{font-size:10px;color:var(--muted);margin-top:8px}
+@media(max-width:760px){.survey-grid{grid-template-columns:1fr}.survey-party-grid{gap:4px}.survey-range input{padding:5px 1px;font-size:10px}.overall-result-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
 </style>
 
 <style id="tv-only-overrides">
@@ -935,6 +959,7 @@ html, body {
   <span class="live-chip"><span class="live-dot"></span>Live</span>
   <span class="round-indicator">Round <b id="rb-cur">0</b> / <span id="rb-max">–</span></span>
   <button class="btn primary" id="btnAdvance">▶ Count next round</button>
+  <button class="btn primary" id="btnPostalCount">✉ Count postal votes</button>
   <button class="btn danger" id="btnNewSim">⟲ New simulation</button>
   <span class="lock-note" id="lockNote"></span>
 </div>
@@ -953,10 +978,17 @@ html, body {
     <div class="toolbar">
       <input class="search-input" id="pollSearch" placeholder="Search constituency, candidate, or party…">
     </div>
+
+      <section class="overall-exit-panel" id="overallExitPollPanel">
+        <div class="overall-exit-head"><div><div class="overall-exit-title">Overall Exit Poll — Four Survey Average</div><div class="overall-exit-sub">Enter the minimum and maximum vote-share percentage for each party in every survey. The overall range is the average of the four survey ranges.</div></div><span class="live-chip">STATEWIDE SURVEY</span></div>
+        <div class="survey-grid" id="overallSurveyGrid"></div>
+        <div class="overall-result"><div class="overall-result-title">Combined Overall Exit-Poll Result (average of four surveys)</div><div class="overall-result-grid" id="overallExitResult"></div><div class="overall-result-note">Ranges are percentage estimates, not official results. The midpoint is shown as the central estimate.</div></div>
+      </section>
+
     <div class="poll-table-wrap">
       <table class="poll">
         <thead><tr>
-          <th>#</th><th>Constituency</th><th>Candidate 1</th><th>Party</th><th>Candidate 2</th><th>Party</th><th>Exit-poll trend</th><th>Predicted leader</th><th>Live status</th>
+          <th>#</th><th>Constituency</th><th>Candidate 1</th><th>Party</th><th>Candidate 2</th><th>Party</th><th>Exit-poll trend</th><th>Postal exit poll</th><th>Predicted leader</th><th>Live status</th>
         </tr></thead>
         <tbody id="pollTbody"></tbody>
       </table>
@@ -983,6 +1015,7 @@ html, body {
     <div class="tv">
       <audio id="tv-bgm" loop preload="auto" autoplay playsinline><source src="tv_9.mp3" type="audio/mpeg"></audio>
       <div class="tv-controlstrip">
+        <button class="btn primary" id="btnPostalCount2">✉ పోస్టల్ ఓట్లు లెక్కించండి</button>
         <button class="btn primary" id="btnAdvance2">▶ రౌండ్ ముందుకు</button>
         <button class="btn danger" id="btnNewSim2">⟲ కొత్త సిమ్యులేషన్</button>
         <span style="margin-left:auto;color:#fff;font-family:'Anek Telugu',sans-serif;font-weight:700;font-size:13px;">రౌండ్ <span id="tv-round-cur">0</span> / <span id="tv-round-max">–</span></span>
@@ -1127,6 +1160,19 @@ let simVersion = 0;
 let currentRound = 0;
 let maxRounds = 1;
 let eventLog = [];
+let postalCounted = false;
+
+const OVERALL_SURVEY_NAMES=['ATHMA SAKSHI','CHANAKYA','AARA','TIMES OF INDIA'];
+const OVERALL_PARTIES=['YSRCP','JSP','TDP','BJP','OTH'];
+function makeEmptyOverallExitPoll(){const out={};OVERALL_SURVEY_NAMES.forEach(n=>{out[n]={};OVERALL_PARTIES.forEach(p=>out[n][p]={min:'',max:''});});return out;}
+let overallExitPoll=makeEmptyOverallExitPoll();
+function renderOverallExitPoll(){
+ const grid=document.getElementById('overallSurveyGrid'),result=document.getElementById('overallExitResult');if(!grid||!result)return;
+ grid.innerHTML=OVERALL_SURVEY_NAMES.map(name=>`<div class="survey-card"><div class="survey-name">${name}</div><div class="survey-party-grid">${OVERALL_PARTIES.map(p=>{const v=overallExitPoll?.[name]?.[p]||{min:'',max:''};return `<div class="survey-party"><label>${p==='YSRCP'?'YCP':p}</label><div class="survey-range"><input type="number" min="0" max="100" step="0.1" placeholder="Min" aria-label="${name} ${p} minimum %" data-survey="${name}" data-party="${p}" data-bound="min" value="${v.min??''}"><span>–</span><input type="number" min="0" max="100" step="0.1" placeholder="Max" aria-label="${name} ${p} maximum %" data-survey="${name}" data-party="${p}" data-bound="max" value="${v.max??''}"></div></div>`;}).join('')}</div></div>`).join('');
+ result.innerHTML=OVERALL_PARTIES.map(p=>{const a=OVERALL_SURVEY_NAMES.map(n=>overallExitPoll?.[n]?.[p]||{});const ok=a.every(v=>v.min!==''&&v.max!==''&&Number.isFinite(Number(v.min))&&Number.isFinite(Number(v.max))&&Number(v.min)<=Number(v.max));if(!ok)return `<div class="overall-result-item"><b>${p==='YSRCP'?'YCP':p}</b><strong>—</strong></div>`;const mn=a.reduce((x,v)=>x+Number(v.min),0)/4,mx=a.reduce((x,v)=>x+Number(v.max),0)/4;return `<div class="overall-result-item"><b>${p==='YSRCP'?'YCP':p}</b><strong>${mn.toFixed(1)}–${mx.toFixed(1)}%</strong><div style="font-size:9px;color:var(--muted);margin-top:3px">Mid: ${((mn+mx)/2).toFixed(1)}%</div></div>`;}).join('');
+}
+function handleOverallExitPollInput(input){const {survey,party,bound}=input.dataset,value=input.value;if(value!==''&&(!Number.isFinite(Number(value))||Number(value)<0||Number(value)>100)){input.setCustomValidity('Enter a percentage between 0 and 100');input.reportValidity();return;}const old=overallExitPoll?.[survey]?.[party]||{min:'',max:''};const next={...old,[bound]:value};if(next.min!==''&&next.max!==''&&Number(next.min)>Number(next.max)){input.setCustomValidity('Minimum cannot be greater than maximum');input.reportValidity();return;}input.setCustomValidity('');overallExitPoll[survey][party]=next;renderOverallExitPoll();if(typeof controlPublishPatch==='function')controlPublishPatch({overallExitPoll});else if(window.ELECTION_DB)window.ELECTION_DB.update({overallExitPoll,updatedAt:Date.now()});}
+
 
 const PERMANENT_VIP_NAMES = new Set([
   "n chandrababu naidu", "chandrababu naidu",
@@ -1221,11 +1267,12 @@ function initState(){
     const prev = prevImportant[rec.id] || { vipC1:false, vipC2:false, photoC1:null, photoC2:null };
     const defaultPhotoC1 = DEFAULT_VIP_PHOTOS[rec.c1] || null;
     const defaultPhotoC2 = DEFAULT_VIP_PHOTOS[rec.c2] || null;
-    STATE[rec.id] = { id:rec.id, name:rec.name, meta, rowVersion:0, result: genResult(meta, seedFor(rec.id, simVersion)), viewingRound:0, revealed:0, vipC1: prev.vipC1 || isPermanentVipCandidate(rec.c1), vipC2: prev.vipC2 || isPermanentVipCandidate(rec.c2), photoC1: prev.photoC1 || defaultPhotoC1, photoC2: prev.photoC2 || defaultPhotoC2 };
+    STATE[rec.id] = { id:rec.id, name:rec.name, meta, rowVersion:0, result: genResult(meta, seedFor(rec.id, simVersion)), viewingRound:0, revealed:0, vipC1: prev.vipC1 || isPermanentVipCandidate(rec.c1), vipC2: prev.vipC2 || isPermanentVipCandidate(rec.c2), photoC1: prev.photoC1 || defaultPhotoC1, photoC2: prev.photoC2 || defaultPhotoC2, postalExitPoll:'TOUGH', postalC1:0, postalC2:0, postalOther:0 };
   });
   currentRound = 0;
   maxRounds = Math.max(...Object.values(STATE).map(s=>s.result.totalRounds));
   eventLog = [];
+  postalCounted = false;
 }
 initState();
 
@@ -1249,7 +1296,7 @@ function classify(party){ if(ALLIANCE_PARTIES.includes(party)) return 'ALLIANCE'
 function revealedFor(s){ return Math.min(s.revealed||0, s.result.totalRounds); }
 // Counting is considered "started" (locks exit-poll editing) once the global round has moved,
 // OR any individual constituency has been advanced on its own.
-function anyCountingStarted(){ return currentRound>0 || Object.values(STATE).some(s=>(s.revealed||0)>0); }
+function anyCountingStarted(){ return postalCounted || currentRound>0 || Object.values(STATE).some(s=>(s.revealed||0)>0); }
 
 function getStatus(s){
   const rev = revealedFor(s);
@@ -1262,13 +1309,56 @@ function getStatus(s){
   return { phase: declared?'won':'leading', leadCand, leadParty, bucket, round:rd, rev };
 }
 
+/* ===================== POSTAL BALLOT COUNT ===================== */
+function postalPartyBucket(party){ return ALLIANCE_PARTIES.includes(party) ? 'ALLIANCE' : (party==='YSRCP' ? 'YSRCP' : 'OTHER'); }
+function countPostalVotes(){
+  if(postalCounted) return false;
+  let totalPostal=0, alliancePostal=0, ysrcpPostal=0;
+  Object.values(STATE).forEach(s=>{
+    const total=randInt(mulberry32(seedFor(s.id,simVersion+731)),350,550);
+    const rng=mulberry32(seedFor(s.id,simVersion+1731));
+    const mode=s.postalExitPoll||'TOUGH';
+    let preferred='c1';
+    if(mode==='ALLIANCE') preferred=postalPartyBucket(s.meta.p1)==='ALLIANCE'?'c1':(postalPartyBucket(s.meta.p2)==='ALLIANCE'?'c2':'c1');
+    if(mode==='YSRCP') preferred=s.meta.p1==='YSRCP'?'c1':(s.meta.p2==='YSRCP'?'c2':'c1');
+    const other=Math.floor(total*(0.01+rng()*0.02));
+    const candidateTotal=total-other;
+    let preferredShare=mode==='TOUGH' ? (0.47+rng()*0.06) : (0.64+rng()*0.13);
+    const preferredVotes=Math.round(candidateTotal*preferredShare);
+    const otherCandidateVotes=candidateTotal-preferredVotes;
+    const c1=preferred==='c1'?preferredVotes:otherCandidateVotes;
+    const c2=preferred==='c2'?preferredVotes:otherCandidateVotes;
+    s.postalC1=c1; s.postalC2=c2; s.postalOther=other;
+    s.postalTotal=total;
+    // Postal ballots are a separate pre-count phase, then included in every subsequent
+    // cumulative round total so the final totals combine postal + regular ballots.
+    s.result.totalVotes += total;
+    s.result.c1Final += c1; s.result.c2Final += c2; s.result.othersFinal += other;
+    s.result.margin = Math.abs(s.result.c1Final-s.result.c2Final);
+    s.result.rounds.forEach(rd=>{
+      rd.c1Cum += c1; rd.c2Cum += c2; rd.othCum += other; rd.totalCum += total;
+    });
+    totalPostal+=total;
+    if(postalPartyBucket(s.meta.p1)==='ALLIANCE') alliancePostal+=c1;
+    if(postalPartyBucket(s.meta.p2)==='ALLIANCE') alliancePostal+=c2;
+    if(s.meta.p1==='YSRCP') ysrcpPostal+=c1;
+    if(s.meta.p2==='YSRCP') ysrcpPostal+=c2;
+  });
+  postalCounted=true;
+  pushEvent(`Postal ballots counted separately: ${fmtInd(totalPostal)} votes across ${Object.keys(STATE).length} constituencies. These votes are included in the subsequent round totals.`);
+  return true;
+}
+function postalExitPollSelectHtml(s,locked){
+  return `<select class="cat-select postal-exit-select" data-id="${s.id}" data-field="postalExitPoll" ${locked?'disabled':''} title="Postal ballot exit-poll assessment"><option value="TOUGH" ${s.postalExitPoll==='TOUGH'?'selected':''}>Tough</option><option value="YSRCP" ${s.postalExitPoll==='YSRCP'?'selected':''}>YSRCP</option><option value="ALLIANCE" ${s.postalExitPoll==='ALLIANCE'?'selected':''}>Alliance</option></select>`;
+}
+
 /* ===================== ROUND ENGINE ===================== */
 function pushEvent(msg){ eventLog.unshift({msg, ts:Date.now()}); if(eventLog.length>60) eventLog.length=60; }
 
 function statusKey(st){ return st.phase+'|'+(st.leadParty||''); }
 
 function advanceRound(steps){
-  if(currentRound>=maxRounds) return false;
+  if(!postalCounted || currentRound>=maxRounds) return false;
   const before = {};
   Object.values(STATE).forEach(s=>{ before[s.id] = statusKey(getStatus(s)); });
   currentRound = Math.min(maxRounds, currentRound+steps);
@@ -1300,6 +1390,7 @@ function advanceRound(steps){
 // Once individually advanced, this seat will be skipped by future global advances
 // until the global round catches up past its revealed round.
 function advanceSeat(id, steps){
+  if(!postalCounted) return false;
   const s = STATE[id];
   if(!s) return false;
   const total = s.result.totalRounds;
@@ -1328,7 +1419,7 @@ function computeTally(){
   Object.values(STATE).forEach(s=>{
     votesDeclared += s.result.totalVotes;
     const rev = revealedFor(s);
-    if(rev>0) votesCounted += s.result.rounds[rev-1].totalCum;
+    if(rev>0) votesCounted += s.result.rounds[rev-1].totalCum; else if(postalCounted) votesCounted += (s.postalTotal||0);
     const st = getStatus(s);
     if(st.phase==='pending'){ pending++; return; }
     if(st.bucket==='TIE'){ tie++; return; }
@@ -1348,7 +1439,8 @@ function renderRoundControls(){
   document.getElementById('tv-round-cur').textContent = currentRound;
   document.getElementById('tv-round-max').textContent = maxRounds;
   const done = currentRound>=maxRounds || Object.values(STATE).every(s=>(s.revealed||0)>=s.result.totalRounds);
-  [document.getElementById('btnAdvance'),document.getElementById('btnAdvance2')].forEach(b=>b.disabled=done);
+  [document.getElementById('btnAdvance'),document.getElementById('btnAdvance2')].forEach(b=>b.disabled=!postalCounted || done);
+  [document.getElementById('btnPostalCount'),document.getElementById('btnPostalCount2')].forEach(b=>{ if(b){ b.disabled=postalCounted; b.textContent=postalCounted ? '✓ Postal votes counted' : (b.id==='btnPostalCount2'?'✉ పోస్టల్ ఓట్లు లెక్కించండి':'✉ Count postal votes'); }});
   const started = anyCountingStarted();
   const lockNote = document.getElementById('lockNote');
   lockNote.innerHTML = started ? 'Exit-poll trends are <b>locked</b> — start a new simulation to edit them.' : 'Exit-poll trends are editable until counting starts.';
@@ -1465,7 +1557,7 @@ function renderPollTable(){
   const q = pollFilterText.trim().toLowerCase();
   const tbody = document.getElementById('pollTbody');
   const rows = Object.values(STATE).filter(s=>!q || s.name.toLowerCase().includes(q) || s.meta.c1.toLowerCase().includes(q) || s.meta.c2.toLowerCase().includes(q) || s.meta.p1.toLowerCase().includes(q) || s.meta.p2.toLowerCase().includes(q)).sort((a,b)=>a.id-b.id);
-  if(rows.length===0){ tbody.innerHTML=`<tr><td colspan="10"><div class="empty-state">No constituency matches "${esc(pollFilterText)}".</div></td></tr>`; return; }
+  if(rows.length===0){ tbody.innerHTML=`<tr><td colspan="11"><div class="empty-state">No constituency matches "${esc(pollFilterText)}".</div></td></tr>`; return; }
   tbody.innerHTML = rows.map(pollRowHtml).join('');
   rows.forEach(s=>{ lastPollTags[s.id] = pollTag(s); });
 }
@@ -1520,7 +1612,13 @@ function roundGridHtml(s){
 function detailPaneHtml(s){
   const rev = revealedFor(s);
   const viewR = (s.viewingRound && s.viewingRound<=rev) ? s.viewingRound : rev;
-  if(viewR===0) return `<div class="detail-empty">Counting has not reached this constituency yet.<br>Advance the global round above, or use "+1 round (this seat)" to start counting just this constituency.</div>`;
+  if(viewR===0) return postalCounted ? `
+    <div class="detail-round-title">Postal ballot count · Separate pre-round phase</div>
+    <div class="cand-row"><div><span class="cand-name">${esc(s.meta.c1)}</span><span class="party-badge pb-${s.meta.p1}">${s.meta.p1}</span></div><div class="cand-votes"><div class="this-round num">${fmtInd(s.postalC1||0)}</div><div class="cum">Postal votes</div></div></div>
+    <div class="cand-row"><div><span class="cand-name">${esc(s.meta.c2)}</span><span class="party-badge pb-${s.meta.p2}">${s.meta.p2}</span></div><div class="cand-votes"><div class="this-round num">${fmtInd(s.postalC2||0)}</div><div class="cum">Postal votes</div></div></div>
+    <div class="cand-row"><div><span class="cand-name" style="color:var(--muted)">Others / NOTA</span></div><div class="cand-votes"><div class="this-round num">${fmtInd(s.postalOther||0)}</div><div class="cum">Postal votes</div></div></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--muted)">Total postal ballots: <b class="num" style="color:var(--text)">${fmtInd(s.postalTotal||0)}</b> · Exit poll: <b>${s.postalExitPoll==='ALLIANCE'?'Alliance':s.postalExitPoll==='YSRCP'?'YSRCP':'Tough'}</b></div>
+    <div class="detail-empty" style="padding:12px 0 2px">Postal votes are counted. They will be combined with the regular votes when Round 1 begins.</div>` : `<div class="detail-empty">Postal ballots have not been counted yet. Select a postal exit poll for each constituency, then click “Count postal votes”.</div>`;
   const rd = s.result.rounds[viewR-1];
   const totalCum=rd.totalCum||1;
   const c1Pct=rd.c1Cum/totalCum*100, c2Pct=rd.c2Cum/totalCum*100, othPct=rd.othCum/totalCum*100;
@@ -1598,8 +1696,8 @@ function consCardHtml(s){
           <div class="detail-round-title" style="margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
             <span>Round-by-round (click a round to inspect)</span>
             <span style="display:flex;gap:6px;">
-              <button class="btn seat-advance" data-seat-id="${s.id}" data-seat-steps="1" ${seatDone?'disabled':''} style="padding:4px 9px;font-size:11px;" title="Advance only this constituency by one round">+1 round (this seat)</button>
-              <button class="btn seat-advance" data-seat-id="${s.id}" data-seat-steps="${s.result.totalRounds}" ${seatDone?'disabled':''} style="padding:4px 9px;font-size:11px;" title="Reveal all remaining rounds for this constituency">Finish this seat</button>
+              <button class="btn seat-advance" data-seat-id="${s.id}" data-seat-steps="1" ${(!postalCounted || seatDone)?'disabled':''} style="padding:4px 9px;font-size:11px;" title="Advance only this constituency by one round">+1 round (this seat)</button>
+              <button class="btn seat-advance" data-seat-id="${s.id}" data-seat-steps="${s.result.totalRounds}" ${(!postalCounted || seatDone)?'disabled':''} style="padding:4px 9px;font-size:11px;" title="Reveal all remaining rounds for this constituency">Finish this seat</button>
             </span>
           </div>
           <div class="round-grid">${roundGridHtml(s)}</div>
@@ -1774,12 +1872,21 @@ function buildNewsFeed(t){
   const declaredTotal = t.allianceWon+t.ysrcpWon+t.othWon;
   const remaining = TOTAL_SEATS - declaredTotal;
   const allDeclared = anyCountingStarted() && declaredTotal===TOTAL_SEATS;
-  // Once all seats are declared, the broadcast round is definitively the
-  // final global round. This prevents a stale round value from leaving the
-  // red-screen news at Round 21 while the results are already final.
-  const broadcastRound = allDeclared ? 21 : currentRound;
   const lines = [];
   const push = (text)=>lines.push({cls:null, text});
+
+  /* ---------- POSTAL BALLOT COUNTED, REGULAR ROUNDS NOT STARTED ---------- */
+  if(postalCounted && currentRound===0){
+    const postalTotal=Object.values(STATE).reduce((sum,x)=>sum+(x.postalTotal||0),0);
+    [
+      'పోస్టల్ బ్యాలెట్ ఓట్ల లెక్కింపు పూర్తయింది',
+      `175 నియోజకవర్గాల్లో పోస్టల్ బ్యాలెట్ ఓట్లు: ${fmtInd(postalTotal)}`,
+      'పోస్టల్ ఓట్లు అభ్యర్థుల మొత్తం ఓట్లలో కలిపారు',
+      'సాధారణ రౌండ్ల లెక్కింపు త్వరలో ప్రారంభం కానుంది',
+      'పోస్టల్ బ్యాలెట్ ఫలితాలు తొలి రౌండ్‌కు ముందు వెల్లడయ్యాయి'
+    ].forEach(push);
+    return shuffleArr(lines);
+  }
 
   /* ---------- PRE-COUNTING ---------- */
   if(!anyCountingStarted()){
@@ -1835,13 +1942,6 @@ function buildNewsFeed(t){
     'అభ్యర్థుల మధ్య హోరాహోరీ పోరు',
     'ఫలితాలపై కొనసాగుతున్న ఉత్కంఠ'
   ]));
-  if(broadcastRound>0){
-    push(pick([
-      `రౌండ్ ${broadcastRound} ఫలితాలు వెల్లడి`,
-      `రౌండ్ ${broadcastRound} తర్వాత ఆధిక్యాల్లో మార్పులు`,
-      `రౌండ్ ${broadcastRound} ఫలితాలతో ఉత్కంఠ`
-    ]));
-  }
 
   // Overall Alliance vs YSRCP trend
   if(aTotal>yTotal){
@@ -2150,6 +2250,12 @@ function getImportantPersonState(person){
 }
 
 
+function serializableState(){
+  const out={};
+  Object.values(STATE).forEach(s=>{ out[s.id]=s; });
+  return out;
+}
+
 function renderTV(){
   const t = computeTally();
   const aTotal = t.allianceWon+t.allianceLead, yTotal = t.ysrcpWon+t.ysrcpLead;
@@ -2213,10 +2319,12 @@ function fullRerenderAll(){
   renderPollTable();
   renderCountList();
   renderTV();
+  renderOverallExitPoll();
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
   fullRerenderAll();
+  document.getElementById('overallSurveyGrid')?.addEventListener('change',e=>{ const input=e.target.closest('[data-survey]'); if(input) handleOverallExitPollInput(input); });
 
   document.querySelectorAll('.toptab').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -2249,7 +2357,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   });
 
-  [document.getElementById('btnAdvance'), document.getElementById('btnAdvance2')].forEach(b=>b.addEventListener('click', ()=>{ advanceRound(1); fullRerenderAll(); }));
+  const runPostalCount=()=>{ if(countPostalVotes()){ fullRerenderAll(); if(window.ELECTION_DB && typeof serializableState==='function'){ window.ELECTION_DB.set({simVersion,currentRound,maxRounds,eventLog,postalCounted,overallExitPoll,state:serializableState(),updatedAt:Date.now()}); } }};
+  [document.getElementById('btnPostalCount'),document.getElementById('btnPostalCount2')].forEach(b=>b?.addEventListener('click',runPostalCount));
+  [document.getElementById('btnAdvance'), document.getElementById('btnAdvance2')].forEach(b=>b.addEventListener('click', ()=>{ if(advanceRound(1)){ fullRerenderAll(); if(window.ELECTION_DB && typeof serializableState==='function') window.ELECTION_DB.set({simVersion,currentRound,maxRounds,eventLog,postalCounted,overallExitPoll,state:serializableState(),updatedAt:Date.now()}); }}));
   [document.getElementById('btnNewSim'), document.getElementById('btnNewSim2')].forEach(b=>b.addEventListener('click', ()=>{
     expandedId = null;
     newSimulation();
@@ -2316,6 +2426,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(anyCountingStarted()) return;
     const field = t.dataset.field;
     if(!field) return;
+    if(field==='postalExitPoll'){ s.postalExitPoll=t.value; if(window.ELECTION_DB) window.ELECTION_DB.update({['state/'+id+'/postalExitPoll']:t.value,updatedAt:Date.now()}); return; }
     s.meta[field] = t.value;
     if(field==='cat'){
       if(s.meta.cat==='TOOCLOSE') s.meta.leader='random';
@@ -2410,6 +2521,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       maxRounds=Math.max(21,Number(data.maxRounds||0),stateMaxRounds);
     }
     if(typeof currentRound!=='undefined') currentRound=Number(data.currentRound||0);
+    if(typeof makeEmptyOverallExitPoll==='function') overallExitPoll=data.overallExitPoll||makeEmptyOverallExitPoll();
     // Safety net for the final snapshot: if every constituency is already
     // revealed to its own final round, the TV must treat the global round as
     // the final round even if an older Firebase snapshot briefly contained
@@ -2417,6 +2529,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const allSeatsFinal=Object.values(STATE||{}).length>0 && Object.values(STATE||{}).every(s=>Number(s?.revealed||0)>=Number(s?.result?.totalRounds||0));
     if(allSeatsFinal && typeof currentRound!=='undefined') currentRound=maxRounds;
     if(typeof eventLog!=='undefined') eventLog=Array.isArray(data.eventLog)?data.eventLog:[];
+    if(typeof postalCounted!=='undefined') postalCounted=!!data.postalCounted;
     if(typeof renderTV==='function') renderTV();
   }
 
